@@ -1,78 +1,104 @@
 
 import React, { Component } from 'react'
-import { Container, Header, Content, Card, CardItem, Thumbnail, Button, Icon,Body, DeckSwiper, Left, List, ListItem} from 'native-base'
-import { View, Text, Image } from 'react-native'
+import { Container, List, ListItem, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from 'native-base';
+import { View, Image } from 'react-native'
 import { getBbcNews } from '../../Api/request'
+import _ from 'lodash'
+import moment from 'moment'
 
-const cards = [
-    {
-      text: 'Card One',
-      name: 'One',
-      image: require('../../../assets/splash.png'),
-    },
-    {
-        text: 'Card Two',
-        name: 'Two',
-        image: require('../../../assets/splash.png'),
-      },
-  ]
 class Bbc extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
+        state = { 
             data: []
          }
-    }
     componentWillMount() {
-        const newArray = []
         getBbcNews()
-        .then(res => {
-            res.articles.map(data => {
-                newArray.push({text: data.title, image: data.urlToImage, name: data.author})
-                })
-            })
-            .then(() => {
-                this.setState({data: newArray})
-            })
-            
+        .then(res => this.setState({data: res.articles}))
+    }
+    componentWillUnmount(){
+        this.setState({data: []})
     }
     render() { 
         const {data} = this.state
-        console.log("==========================", data)
-        if (!data ){
+        if( _.isEmpty(data)) {
             return (
-                <View><Text>hello</Text></View>
+                <View></View>
             )
-        }
+        } 
         return (
                 <Content style={{backgroundColor: 'red'}}>
-                    <Text>hhhhh</Text>
-                    <DeckSwiper
-                        dataSource={ data }
-                        renderItem={ item => 
-                        <Card style={{ elevation: 3 }}>
-                            <CardItem>
-                            <Left>
-                                <Thumbnail source={{uri: item.image}} />
+                   <List dataArray={data}
+                     renderRow={(item) =>
+                        <ListItem>
+                            <Card>
+                                <CardItem>
+                                    <Left>
+                                        <Thumbnail source={{uri: item.urlToImage}} />
+                                        <Body>
+                                        <Text>{item.title}</Text>
+                                        <Text note>{item.author}</Text>
+                                        </Body>
+                                    </Left>
+                                </CardItem>
+                                <CardItem cardBody>
+                                <Image source={{uri: item.urlToImage}} style={{height: 200, width: null, flex: 1}}/>
+                                </CardItem>
+                                <CardItem>
+                                <Left>
+                                    <Button transparent>
+                                    <Icon active name="thumbs-up" />
+                                    <Text>12 Likes</Text>
+                                    </Button>
+                                </Left>
                                 <Body>
-                                <Text>{item.name}</Text>
-                                <Text note>{item.title}</Text>
+                                    <Button transparent>
+                                    <Icon active name="calendar" />
+                                    <Text>{moment(item.publishedAt).format("l")}</Text>
+                                    </Button>
                                 </Body>
-                            </Left>
-                            </CardItem>
-                            <CardItem cardBody>
-                            <Image style={{ height: 300, flex: 1 }} source={{uri: item.image}} />
-                            </CardItem>
-                            <CardItem>
-                            <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                            <Text>{item.text}</Text>
-                            </CardItem>
-                        </Card>
-                        }
-                 />
+                                <Right>
+                                    <Text>{moment().diff(item.publishedAt, "hours")}</Text>
+                                </Right>
+                                </CardItem>
+                            </Card>
+                        </ListItem>
+                     }>
+                     </List>
                 </Content>
             )
     }
 }
  
 export default Bbc;
+
+
+<Card>
+<CardItem>
+  <Left>
+    <Thumbnail source={{uri: 'Image URL'}} />
+    <Body>
+      <Text>NativeBase</Text>
+      <Text note>GeekyAnts</Text>
+    </Body>
+  </Left>
+</CardItem>
+<CardItem cardBody>
+  <Image source={{uri: 'Image URL'}} style={{height: 200, width: null, flex: 1}}/>
+</CardItem>
+<CardItem>
+  <Left>
+    <Button transparent>
+      <Icon active name="thumbs-up" />
+      <Text>12 Likes</Text>
+    </Button>
+  </Left>
+  <Body>
+    <Button transparent>
+      <Icon active name="chatbubbles" />
+      <Text>4 Comments</Text>
+    </Button>
+  </Body>
+  <Right>
+    <Text>11h ago</Text>
+  </Right>
+</CardItem>
+</Card>
