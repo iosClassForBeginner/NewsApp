@@ -29,7 +29,7 @@ class Cnn extends Component {
                     data={this.state.datas}
                     keyExtractor={this._keyExtractor}
                     renderItem={({item}) =>
-                        <ListItem key={item.title}>
+                        <ListItem>
                             <Card style={{flex: 1}}>
                                 <CardItem>
                                 <Left>
