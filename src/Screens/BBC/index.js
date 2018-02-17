@@ -25,7 +25,7 @@ class Bbc extends Component {
             )
         } 
         return (
-                <Content style={{backgroundColor: 'red'}}>
+                <Content>
                    <List dataArray={data}
                      renderRow={(item) =>
                         <ListItem>
